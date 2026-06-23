@@ -18,13 +18,13 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: HarborClient Blog
+title: REST API Notes
 email: hello@harborclient.dev
 description: >-
-  A simple static blog built with Jekyll for sharing notes, tutorials, and ideas.
+  Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.
 baseurl: ""
 url: "http://127.0.0.1:4000"
-author: HarborClient
+author: Sean
 github_username: headzoo
 
 # Build settings
