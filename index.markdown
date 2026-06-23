@@ -3,7 +3,7 @@ layout: home
 title: Home
 ---
 
-Welcome to HarborClient Blog.
+Welcome to REST API Notes.
 
 This site is a lightweight Jekyll blog for sharing practical notes, build tips, and project updates.
 
