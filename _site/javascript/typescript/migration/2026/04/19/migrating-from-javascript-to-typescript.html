@@ -2,7 +2,8 @@
 <html lang="en"><head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.9.0 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png"><!-- Begin Jekyll SEO tag v2.9.0 -->
 <title>Migrating from JavaScript to Typescript | Application-to-Web Internals</title>
 <meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="Migrating from JavaScript to Typescript" />
@@ -10,18 +11,18 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Most JavaScript codebases do not need a big-bang rewrite to adopt TypeScript. The migration that works best is incremental: rename a few files, tighten compiler settings over time, and let types catch bugs at the boundaries where they matter most." />
 <meta name="twitter:description" property="og:description" content="Most JavaScript codebases do not need a big-bang rewrite to adopt TypeScript. The migration that works best is incremental: rename a few files, tighten compiler settings over time, and let types catch bugs at the boundaries where they matter most." />
-<link rel="canonical" href="http://localhost:4001/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html" />
-<meta property="og:url" content="http://localhost:4001/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html" />
+<link rel="canonical" href="http://localhost:4010/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html" />
+<meta property="og:url" content="http://localhost:4010/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html" />
 <meta property="og:site_name" content="Application-to-Web Internals" />
-<meta property="og:image" content="http://localhost:4001/assets/images/migrating-from-javascript-to-typescript.png" />
+<meta property="og:image" content="http://localhost:4010/assets/images/migrating-from-javascript-to-typescript.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2026-04-19T08:00:00-04:00" />
 <meta property="article:modified_time" content="2026-04-19T08:00:00-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="http://localhost:4001/assets/images/migrating-from-javascript-to-typescript.png" />
+<meta name="twitter:image" content="http://localhost:4010/assets/images/migrating-from-javascript-to-typescript.png" />
 <meta name="twitter:title" content="Migrating from JavaScript to Typescript" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean"},"dateModified":"2026-04-19T08:00:00-04:00","datePublished":"2026-04-19T08:00:00-04:00","description":"Most JavaScript codebases do not need a big-bang rewrite to adopt TypeScript. The migration that works best is incremental: rename a few files, tighten compiler settings over time, and let types catch bugs at the boundaries where they matter most.","headline":"Migrating from JavaScript to Typescript","image":"http://localhost:4001/assets/images/migrating-from-javascript-to-typescript.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4001/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html"},"url":"http://localhost:4001/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean"},"dateModified":"2026-04-19T08:00:00-04:00","datePublished":"2026-04-19T08:00:00-04:00","description":"Most JavaScript codebases do not need a big-bang rewrite to adopt TypeScript. The migration that works best is incremental: rename a few files, tighten compiler settings over time, and let types catch bugs at the boundaries where they matter most.","headline":"Migrating from JavaScript to Typescript","image":"http://localhost:4010/assets/images/migrating-from-javascript-to-typescript.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4010/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html"},"url":"http://localhost:4010/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +30,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="stylesheet" href="/assets/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4001/feed.xml" title="Application-to-Web Internals" /></head><body><header class="site-header" role="banner">
+  <link rel="stylesheet" href="/assets/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4010/feed.xml" title="Application-to-Web Internals" /></head><body><header class="site-header" role="banner">
   <div class="wrapper header-inner">
     <a class="site-brand" rel="author" href="/" aria-label="Application-to-Web Internals home">
       <span class="site-logo" aria-hidden="true">
