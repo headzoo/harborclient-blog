@@ -109,10 +109,6 @@ body {
   justify-content: center;
   width: 2.25rem;
   height: 2.25rem;
-  font-size: 0.625rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  color: #fff;
   background:
     radial-gradient(circle at 30% 20%, rgba(96, 165, 250, 0.35), transparent 42%),
     linear-gradient(135deg, #0f172a 0%, #1e3a8a 48%, #2563eb 100%);
@@ -129,35 +125,9 @@ body {
   height: 100%;
 }
 
-.site-logo-frame {
-  fill: rgba(10, 10, 11, 0.18);
-  stroke: rgba(219, 234, 254, 0.22);
-  stroke-width: 1.5;
-}
-
-.site-logo-path {
-  fill: none;
-  stroke: #f8fafc;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-}
-
-.site-logo-path--muted {
-  stroke: rgba(191, 219, 254, 0.72);
-  stroke-width: 2;
-}
-
-.site-logo-node {
-  fill: #bfdbfe;
-  stroke: #0f172a;
-  stroke-width: 1.25;
-}
-
 .site-logo--footer {
   width: 1.75rem;
   height: 1.75rem;
-  font-size: 0.5625rem;
 }
 
 .site-title {

@@ -2,14 +2,8 @@
   <div class="wrapper header-inner">
     <a class="site-brand" rel="author" href="{{ '/' | relative_url }}" aria-label="{{ site.title | escape }} home">
       <span class="site-logo" aria-hidden="true">
-        <svg class="site-logo-mark" viewBox="0 0 44 44" focusable="false">
-          <rect class="site-logo-frame" x="5" y="5" width="34" height="34" rx="10" />
-          <path class="site-logo-path" d="M13 28L22 15L31 28" />
-          <path class="site-logo-path site-logo-path--muted" d="M16 28H28" />
-          <circle class="site-logo-node" cx="13" cy="28" r="3" />
-          <circle class="site-logo-node" cx="22" cy="15" r="3" />
-          <circle class="site-logo-node" cx="31" cy="28" r="3" />
-        </svg>
+        <img class="site-logo-mark" src="{{ '/assets/images/site-logo-mark.svg' | relative_url }}" alt="" width="44"
+          height="44">
       </span>
       <span class="site-title">{{ site.title | escape }}</span>
     </a>

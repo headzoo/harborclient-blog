@@ -11,18 +11,18 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="TypeScript can make REST API clients easier to use and safer to refactor, but only if the types describe the real API contract. A typed wrapper around fetch should prevent common mistakes without hiding how HTTP works." />
 <meta name="twitter:description" property="og:description" content="TypeScript can make REST API clients easier to use and safer to refactor, but only if the types describe the real API contract. A typed wrapper around fetch should prevent common mistakes without hiding how HTTP works." />
-<link rel="canonical" href="http://localhost:4010/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html" />
-<meta property="og:url" content="http://localhost:4010/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html" />
+<link rel="canonical" href="http://localhost:4001/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html" />
+<meta property="og:url" content="http://localhost:4001/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html" />
 <meta property="og:site_name" content="Application-to-Web Internals" />
-<meta property="og:image" content="http://localhost:4010/assets/images/building-type-safe-rest-api-clients-in-typescript.png" />
+<meta property="og:image" content="http://localhost:4001/assets/images/building-type-safe-rest-api-clients-in-typescript.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2026-06-10T11:35:00-04:00" />
 <meta property="article:modified_time" content="2026-06-10T11:35:00-04:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="http://localhost:4010/assets/images/building-type-safe-rest-api-clients-in-typescript.png" />
+<meta name="twitter:image" content="http://localhost:4001/assets/images/building-type-safe-rest-api-clients-in-typescript.png" />
 <meta name="twitter:title" content="Building Type-Safe REST API Clients in TypeScript" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean"},"dateModified":"2026-06-10T11:35:00-04:00","datePublished":"2026-06-10T11:35:00-04:00","description":"TypeScript can make REST API clients easier to use and safer to refactor, but only if the types describe the real API contract. A typed wrapper around fetch should prevent common mistakes without hiding how HTTP works.","headline":"Building Type-Safe REST API Clients in TypeScript","image":"http://localhost:4010/assets/images/building-type-safe-rest-api-clients-in-typescript.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4010/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html"},"url":"http://localhost:4010/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean"},"dateModified":"2026-06-10T11:35:00-04:00","datePublished":"2026-06-10T11:35:00-04:00","description":"TypeScript can make REST API clients easier to use and safer to refactor, but only if the types describe the real API contract. A typed wrapper around fetch should prevent common mistakes without hiding how HTTP works.","headline":"Building Type-Safe REST API Clients in TypeScript","image":"http://localhost:4001/assets/images/building-type-safe-rest-api-clients-in-typescript.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4001/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html"},"url":"http://localhost:4001/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,18 +30,12 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/assets/main.css">
-  <link rel="stylesheet" href="/assets/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4010/feed.xml" title="Application-to-Web Internals" /></head><body><header class="site-header" role="banner">
+  <link rel="stylesheet" href="/assets/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4001/feed.xml" title="Application-to-Web Internals" /></head><body><header class="site-header" role="banner">
   <div class="wrapper header-inner">
     <a class="site-brand" rel="author" href="/" aria-label="Application-to-Web Internals home">
       <span class="site-logo" aria-hidden="true">
-        <svg class="site-logo-mark" viewBox="0 0 44 44" focusable="false">
-          <rect class="site-logo-frame" x="5" y="5" width="34" height="34" rx="10" />
-          <path class="site-logo-path" d="M13 28L22 15L31 28" />
-          <path class="site-logo-path site-logo-path--muted" d="M16 28H28" />
-          <circle class="site-logo-node" cx="13" cy="28" r="3" />
-          <circle class="site-logo-node" cx="22" cy="15" r="3" />
-          <circle class="site-logo-node" cx="31" cy="28" r="3" />
-        </svg>
+        <img class="site-logo-mark" src="/assets/images/site-logo-mark.svg" alt="" width="44"
+          height="44">
       </span>
       <span class="site-title">Application-to-Web Internals</span>
     </a><nav class="site-nav" aria-label="Main navigation">
@@ -306,7 +300,10 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="footer-logo-link" href="/">
-          <span class="site-logo site-logo--footer" aria-hidden="true">ATW</span>
+          <span class="site-logo site-logo--footer" aria-hidden="true">
+            <img class="site-logo-mark" src="/assets/images/site-logo-mark.svg" alt="" width="44"
+              height="44">
+          </span>
           <span class="footer-heading">Application-to-Web Internals</span>
         </a>
         <p class="footer-tagline">Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.</p>

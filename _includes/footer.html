@@ -5,7 +5,10 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="footer-logo-link" href="{{ '/' | relative_url }}">
-          <span class="site-logo site-logo--footer" aria-hidden="true">ATW</span>
+          <span class="site-logo site-logo--footer" aria-hidden="true">
+            <img class="site-logo-mark" src="{{ '/assets/images/site-logo-mark.svg' | relative_url }}" alt="" width="44"
+              height="44">
+          </span>
           <span class="footer-heading">{{ site.title | escape }}</span>
         </a>
         <p class="footer-tagline">{{ site.description | escape }}</p>
