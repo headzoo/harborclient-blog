@@ -3,8 +3,6 @@ layout: home
 title: Home
 ---
 
-Welcome to Application-to-Web Internals.
+Practical notes on REST APIs, web internals, and the craft of building software that connects applications to the web.
 
-This site is a lightweight Jekyll blog for sharing practical notes, build tips, and project updates.
-
-The latest posts appear below, and you can visit the About page to learn more about the purpose of this site.
+Short articles, build tips, and lessons learned — written for developers who care about clarity and good engineering.

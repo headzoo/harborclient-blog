@@ -1,24 +1,45 @@
 ---
 layout: default
 ---
+{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+
+<section class="hero">
+  <div class="hero-badge">Engineering notes &amp; API insights</div>
+  <h1 class="hero-title">{{ site.title | escape }}</h1>
+  <div class="hero-body">
+    {{ content }}
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#latest-posts">Browse posts</a>
+    <a class="btn btn-secondary" href="{{ " /about/" | relative_url }}">About this site</a>
+  </div>
+</section>
 
 {%- if site.posts.size > 0 -%}
-  <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
+<section class="posts-section" id="latest-posts">
+  <div class="section-header">
+    <h2 class="post-list-heading">{{ page.list_title | default: "Latest posts" }}</h2>
+    <a class="rss-link" href="{{ " /feed.xml" | relative_url }}">Subscribe via RSS</a>
+  </div>
+
   <ul class="post-list">
     {%- for post in site.posts -%}
-    <li>
-      <span class="post-meta">{{ post.date | date: date_format }}</span>
-      <h3>
-        <a class="post-link" href="{{ post.url | relative_url }}">
-          {{ post.title | escape }}
-        </a>
-      </h3>
-      {%- if post.excerpt -%}
-      <p class="post-excerpt">{{ post.excerpt }}</p>
-      {%- endif -%}
+    <li class="post-card">
+      <a class="post-card-link" href="{{ post.url | relative_url }}">
+        <div class="post-card-meta">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: date_format }}</time>
+          {%- if post.categories.size > 0 -%}
+          <span class="post-card-category">{{ post.categories | first }}</span>
+          {%- endif -%}
+        </div>
+        <h3 class="post-card-title">{{ post.title | escape }}</h3>
+        {%- if post.excerpt -%}
+        <p class="post-card-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+        {%- endif -%}
+        <span class="post-card-read">Read article &rarr;</span>
+      </a>
     </li>
     {%- endfor -%}
   </ul>
-
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+</section>
 {%- endif -%}

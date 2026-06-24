@@ -1,43 +1,41 @@
 <footer class="site-footer h-card">
-  <data class="u-url" href="{{ "/" | relative_url }}"></data>
+  <data class="u-url" href="{{ " /" | relative_url }}"></data>
 
   <div class="wrapper">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="footer-logo-link" href="{{ " /" | relative_url }}">
+          <span class="site-logo site-logo--footer" aria-hidden="true">ATW</span>
+          <span class="footer-heading">{{ site.title | escape }}</span>
+        </a>
+        <p class="footer-tagline">{{ site.description | escape }}</p>
+      </div>
 
-    <h2 class="footer-heading">{{ site.title | escape }}</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">
-            {%- if site.author -%}
-              {{ site.author | escape }}
-            {%- else -%}
-              {{ site.title | escape }}
-            {%- endif -%}
-            </li>
-            {%- if site.email -%}
-            <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
-            {%- endif -%}
+      <div class="footer-links">
+        <h3 class="footer-label">Connect</h3>
+        <ul class="footer-link-list">
+          {%- if site.email -%}
+          <li><a class="u-email" href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+          {%- endif -%}
+          {%- if site.github_username -%}
+          <li><a href="https://github.com/{{ site.github_username }}" rel="me">GitHub</a></li>
+          {%- endif -%}
+          <li><a href="{{ " /feed.xml" | relative_url }}">RSS Feed</a></li>
+          <li><a href="{{ " /about/" | relative_url }}">About</a></li>
         </ul>
       </div>
 
-      <div class="footer-col footer-col-2">
-        {%- if site.social_links -%}
-          <ul class="social-media-list">
-            {%- for social in site.social_links -%}
-              <li><a rel="me" href="{{ social.link }}" title="{{ social.title }}">
-                  <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg>
-              </a></li>
-            {%- endfor -%}
-          </ul>
-        {%- endif -%}
-      </div>
-
-      <div class="footer-col footer-col-3">
-        <p>{{ site.description | escape }}</p>
+      <div class="footer-meta">
+        <h3 class="footer-label">Published by</h3>
+        <p class="p-name">
+          {%- if site.author -%}
+          {{ site.author | escape }}
+          {%- else -%}
+          {{ site.title | escape }}
+          {%- endif -%}
+        </p>
+        <p class="footer-copy">&copy; {{ 'now' | date: "%Y" }} {{ site.title | escape }}</p>
       </div>
     </div>
-
   </div>
-
 </footer>

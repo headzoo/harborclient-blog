@@ -4,6 +4,6 @@ title: About
 permalink: /about/
 ---
 
-Application-to-Web Internals is a simple static site built with Jekyll. It is designed to be easy to maintain, fast to load, and pleasant to read.
+Application-to-Web Internals is a static blog built with Jekyll. It is designed to be fast, easy to maintain, and pleasant to read on any device.
 
-The goal is to publish short articles, project notes, and lessons learned in a format that works well for both desktop and mobile readers.
+The focus is on REST APIs, web internals, and practical engineering notes — short articles and project updates written for developers who want clear, useful content without the noise.
