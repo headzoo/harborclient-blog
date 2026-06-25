@@ -23,7 +23,7 @@ email: hello@atw-internals.com
 description: >-
   Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.
 baseurl: ""
-url: "http://127.0.0.1:4000"
+url: "https://atw-internals.com"
 author: Sean
 github_username: headzoo
 home_preview_word_limit: 400
