@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "dev": "bundle exec jekyll serve --livereload -P 4001",
-    "build": "JEKYLL_ENV=production bundle exec jekyll build --config _config.yml,_config_production.yml"
+    "build": "JEKYLL_ENV=production bundle exec jekyll build --config _config.yml,_config_production.yml",
+    "deploy": "pnpm bundle exec jekyll build && wrangler deploy",
+    "preview": "pnpm bundle exec jekyll build && wrangler dev"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.17.1",
   "devDependencies": {
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "wrangler": "^4.105.0"
   }
 }
