@@ -1,4 +1,460 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2026-06-24T14:26:10-04:00</updated><id>http://localhost:4001/feed.xml</id><title type="html">Application-to-Web Internals</title><subtitle>Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.</subtitle><author><name>Sean</name></author><entry><title type="html">HarborClient Adds Plugin Support</title><link href="http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support.html" rel="alternate" type="text/html" title="HarborClient Adds Plugin Support" /><published>2026-06-24T14:00:00-04:00</published><updated>2026-06-24T14:00:00-04:00</updated><id>http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support</id><content type="html" xml:base="http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support.html"><![CDATA[<p><a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient 1.8.0</a> now supports installable plugins — extensions that add UI, themes, and HTTP hooks without waiting for a new app release. The full announcement is on the <a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient blog</a>; here are the highlights.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4001/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4001/" rel="alternate" type="text/html" /><updated>2026-06-24T23:05:03-04:00</updated><id>http://localhost:4001/feed.xml</id><title type="html">Application-to-Web Internals</title><subtitle>Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.</subtitle><author><name>Sean</name></author><entry><title type="html">The Beauty and Simplicity of HTTPie</title><link href="http://localhost:4001/rest-api/testing/cli/2026/06/24/the-beauty-and-simplicity-of-httpie.html" rel="alternate" type="text/html" title="The Beauty and Simplicity of HTTPie" /><published>2026-06-24T18:00:00-04:00</published><updated>2026-06-24T18:00:00-04:00</updated><id>http://localhost:4001/rest-api/testing/cli/2026/06/24/the-beauty-and-simplicity-of-httpie</id><content type="html" xml:base="http://localhost:4001/rest-api/testing/cli/2026/06/24/the-beauty-and-simplicity-of-httpie.html"><![CDATA[<p>Most command-line HTTP tools were built for scripts first and humans second. HTTPie flipped that priority. The <code class="language-plaintext highlighter-rouge">http</code> command reads like a sentence — method, URL, headers, and JSON fields on one line — and the output is formatted and colorized so you can scan a response without piping through another tool.</p>
+
+<p>If you test REST APIs from the terminal, HTTPie is worth keeping in your toolkit. It does not replace <code class="language-plaintext highlighter-rouge">curl</code> everywhere, but for everyday exploration, documentation examples, and quick debugging, the syntax removes a surprising amount of friction.</p>
+
+<h2 id="why-httpie-feels-different">Why HTTPie feels different</h2>
+
+<p>Three design choices stand out when you use HTTPie regularly:</p>
+
+<ul>
+  <li><strong>Expressive request items</strong> — headers, query params, and body fields use distinct separators instead of a pile of flags</li>
+  <li><strong>Formatted terminal output</strong> — status line, headers, and body are separated and colorized</li>
+  <li><strong>JSON by default</strong> — field data serializes to JSON without setting <code class="language-plaintext highlighter-rouge">Content-Type</code> manually</li>
+</ul>
+
+<p>Compare a simple authenticated <code class="language-plaintext highlighter-rouge">GET</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-i</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  https://api.example.com/users/me
+</code></pre></div></div>
+
+<p>The same request in HTTPie:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http GET https://api.example.com/users/me <span class="se">\</span>
+  Authorization:<span class="s2">"Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>Both work. HTTPie just keeps the command closer to what you are trying to do.</p>
+
+<h2 id="your-first-requests">Your first requests</h2>
+
+<p>A health check:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http GET https://api.example.com/health
+</code></pre></div></div>
+
+<p>HTTPie also accepts shorthand for localhost. <code class="language-plaintext highlighter-rouge">:3000</code> expands to <code class="language-plaintext highlighter-rouge">http://localhost:3000</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http :3000/users
+</code></pre></div></div>
+
+<p>Posting JSON is equally direct — field arguments become a JSON object:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http POST https://api.example.com/users <span class="se">\</span>
+  <span class="nv">email</span><span class="o">=</span>avery@example.com <span class="se">\</span>
+  <span class="nv">name</span><span class="o">=</span>Avery
+</code></pre></div></div>
+
+<p>If you omit the method and include field data, HTTPie defaults to <code class="language-plaintext highlighter-rouge">POST</code>. For read-only calls, it defaults to <code class="language-plaintext highlighter-rouge">GET</code>.</p>
+
+<h2 id="request-items-cheat-sheet">Request items cheat sheet</h2>
+
+<p>HTTPie builds requests from <strong>request items</strong> — the tokens after the URL. The separator tells HTTPie what each item means:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Separator</th>
+      <th>Meaning</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Header:value</code></td>
+      <td>HTTP header</td>
+      <td><code class="language-plaintext highlighter-rouge">Accept:application/json</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">field=value</code></td>
+      <td>JSON or form field</td>
+      <td><code class="language-plaintext highlighter-rouge">email=avery@example.com</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">param==value</code></td>
+      <td>Query string parameter</td>
+      <td><code class="language-plaintext highlighter-rouge">page==2 limit==10</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">field:=value</code></td>
+      <td>Raw JSON value</td>
+      <td><code class="language-plaintext highlighter-rouge">active:=true tags:='["a","b"]'</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Nested JSON uses bracket notation:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http POST https://api.example.com/users <span class="se">\</span>
+  <span class="nv">name</span><span class="o">=</span>Avery <span class="se">\</span>
+  address[city]<span class="o">=</span>Portland <span class="se">\</span>
+  address[state]<span class="o">=</span>OR
+</code></pre></div></div>
+
+<p>To send a body from a file, embed its contents inline:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http POST https://api.example.com/users &lt; payload.json
+</code></pre></div></div>
+
+<p>Or reference a file as a field value:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http POST https://api.example.com/imports <span class="nv">body</span><span class="o">=</span>@payload.json
+</code></pre></div></div>
+
+<h2 id="headers-auth-and-query-params">Headers, auth, and query params</h2>
+
+<p>Custom headers sit inline with the rest of the command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http GET https://api.example.com/reports <span class="se">\</span>
+  X-API-Key:<span class="nv">$API_KEY</span> <span class="se">\</span>
+  Accept:application/json
+</code></pre></div></div>
+
+<p>Bearer tokens follow the same pattern:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http GET https://api.example.com/users/me <span class="se">\</span>
+  Authorization:<span class="s2">"Bearer </span><span class="nv">$ACCESS_TOKEN</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>For basic auth, use the <code class="language-plaintext highlighter-rouge">-a</code> flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">-a</span> admin:secret GET https://api.example.com/admin/stats
+</code></pre></div></div>
+
+<p>Query parameters do not require hand-built URLs:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http GET https://api.github.com/search/repositories <span class="se">\</span>
+  <span class="nv">q</span><span class="o">==</span>httpie <span class="nv">per_page</span><span class="o">==</span>5
+</code></pre></div></div>
+
+<p>That appends <code class="language-plaintext highlighter-rouge">?q=httpie&amp;per_page=5</code> for you.</p>
+
+<h2 id="sessions-and-downloads">Sessions and downloads</h2>
+
+<p>APIs that set cookies — login flows, CSRF tokens, session IDs — are easier to test with a named session:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">--session</span><span class="o">=</span>logged-in POST https://api.example.com/login <span class="se">\</span>
+  <span class="nv">email</span><span class="o">=</span>avery@example.com <span class="nv">password</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PASSWORD</span><span class="s2">"</span>
+
+http <span class="nt">--session</span><span class="o">=</span>logged-in GET https://api.example.com/users/me
+</code></pre></div></div>
+
+<p>The second request reuses cookies from the first.</p>
+
+<p>To save a response body to disk, use download mode:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">--download</span> GET https://api.example.com/exports/report.csv
+</code></pre></div></div>
+
+<p>HTTPie picks a filename from the response headers when it can.</p>
+
+<p>If you want to inspect the request without sending it, <code class="language-plaintext highlighter-rouge">--offline</code> prints what would go over the wire:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">--offline</span> POST https://api.example.com/users <span class="nv">name</span><span class="o">=</span>Avery
+</code></pre></div></div>
+
+<p>Useful when you are double-checking headers or JSON before hitting a production endpoint.</p>
+
+<h2 id="output-and-scripting">Output and scripting</h2>
+
+<p>By default, HTTPie prints response headers and body. Control output with <code class="language-plaintext highlighter-rouge">--print</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">--print</span><span class="o">=</span>b GET https://api.example.com/users/123
+</code></pre></div></div>
+
+<p>That prints only the body — handy when piping into other tools.</p>
+
+<p>For scripts, <code class="language-plaintext highlighter-rouge">--check-status</code> makes HTTPie exit with a non-zero code on <code class="language-plaintext highlighter-rouge">4xx</code> and <code class="language-plaintext highlighter-rouge">5xx</code> responses:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http <span class="nt">--check-status</span> GET https://api.example.com/health
+</code></pre></div></div>
+
+<p>Combine with <code class="language-plaintext highlighter-rouge">--print=b</code> when you only care about success or failure.</p>
+
+<p>HTTPie is excellent for interactive work. When you need maximum portability in CI or minimal containers, <code class="language-plaintext highlighter-rouge">curl</code> with <code class="language-plaintext highlighter-rouge">jq</code> is still the safer default. See <a href="/rest-api/testing/cli/2026/03/12/testing-rest-apis-from-the-command-line.html">Testing REST APIs from the Command Line</a> for a fuller shell-based workflow.</p>
+
+<h2 id="httpie-beyond-the-cli">HTTPie beyond the CLI</h2>
+
+<p>HTTPie also offers a desktop app for visual request building and response inspection. This post focuses on the CLI because that is where the tool’s simplicity is most obvious — one command, readable syntax, formatted output.</p>
+
+<p>If you prefer a GUI for collections and team workflows, there are plenty of options. <a href="/rest-api/testing/tools/2026/06/24/postman-alternatives.html">Postman Alternatives</a> surveys several worth considering.</p>
+
+<h2 id="closing-thoughts">Closing thoughts</h2>
+
+<p>HTTPie makes REST API testing from the terminal feel less like wrestling with flags and more like describing a request. The request-item syntax scales from a one-line health check to authenticated POSTs with nested JSON, and the formatted output saves time on every response.</p>
+
+<p>Install it through your package manager:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>httpie      <span class="c"># macOS</span>
+apt <span class="nb">install </span>httpie       <span class="c"># Debian/Ubuntu</span>
+pip <span class="nb">install </span>httpie       <span class="c"># Python environments</span>
+</code></pre></div></div>
+
+<p>Then pick one endpoint you test often, rewrite the <code class="language-plaintext highlighter-rouge">curl</code> command as <code class="language-plaintext highlighter-rouge">http</code>, and keep the version that reads better. For most exploratory API work, that will be HTTPie. Full reference: <a href="https://httpie.io/docs/cli">httpie.io/docs/cli</a>.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="testing" /><category term="cli" /><summary type="html"><![CDATA[Most command-line HTTP tools were built for scripts first and humans second. HTTPie flipped that priority. The http command reads like a sentence — method, URL, headers, and JSON fields on one line — and the output is formatted and colorized so you can scan a response without piping through another tool.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/the-beauty-and-simplicity-of-httpie.png" /><media:content medium="image" url="http://localhost:4001/assets/images/the-beauty-and-simplicity-of-httpie.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Writing a HarborClient Plugin</title><link href="http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html" rel="alternate" type="text/html" title="Writing a HarborClient Plugin" /><published>2026-06-24T16:00:00-04:00</published><updated>2026-06-24T16:00:00-04:00</updated><id>http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin</id><content type="html" xml:base="http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html"><![CDATA[<p><a href="https://harborclient.com/">HarborClient</a> plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a <code class="language-plaintext highlighter-rouge">.hcp</code> file, which is really just a ZIP archive with a friendly extension.</p>
+
+<p>If you have not read the announcement yet, start with <a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient Adds Plugin Support</a> for the big picture. This guide walks through building your first plugin step by step, using the official <a href="https://harborclient.github.io/plugin-api/">plugin API docs</a> as reference.</p>
+
+<p>HarborClient already has <a href="https://harborclient.com/request-scripts">request scripts</a> that run once per send inside a sandboxed utility process. Plugins are different: they are long-lived extensions with a broader API suited to UI contributions, themes, storage, and HTTP hooks that stay active until you disable the plugin.</p>
+
+<h2 id="what-you-will-build">What you will build</h2>
+
+<p>You will create a <strong>Request Audit</strong> tab — a read-only panel in the request editor that summarizes the active draft as JSON: method, URL, header count, whether a body is present, and the last response status.</p>
+
+<p>This example comes straight from the <a href="https://harborclient.github.io/plugin-api/examples/request-audit-tab.html">request audit tab docs</a>. It is a good first plugin because it needs only the <code class="language-plaintext highlighter-rouge">ui</code> permission and a single renderer entry — no main-process code, no IPC, no filesystem access.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>Before you start, make sure you have:</p>
+
+<ul>
+  <li><strong>HarborClient 1.8.0 or later</strong> — base plugin support. Use <strong>1.9.0+</strong> if you want <code class="language-plaintext highlighter-rouge">hc.pluginId</code>, renderer-side <code class="language-plaintext highlighter-rouge">onAfterSend</code>, or <code class="language-plaintext highlighter-rouge">hc.host.openRequestDraft</code>.</li>
+  <li><strong>Node.js</strong> and <strong>pnpm</strong></li>
+  <li><strong><code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code></strong> as a dev dependency in your plugin project</li>
+</ul>
+
+<h2 id="scaffold-the-project">Scaffold the project</h2>
+
+<p>The fastest way to start is the official skeleton:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx @harborclient/plugin-skeleton@latest
+<span class="nb">cd </span>my-plugin
+pnpm <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>You can also clone the <a href="https://github.com/harborclient/plugin-skeleton">plugin-skeleton repo</a> and adapt it. Either way, you get a project layout, TypeScript config, and esbuild scripts ready to go.</p>
+
+<h2 id="understand-the-package-layout">Understand the package layout</h2>
+
+<p>A plugin project mirrors what goes inside a <code class="language-plaintext highlighter-rouge">.hcp</code> file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my-plugin/
+├── manifest.json
+├── README.md
+├── src/
+│   └── renderer.tsx      # your source — not loaded at runtime
+└── dist/
+    └── renderer.js       # bundled output — referenced by manifest
+</code></pre></div></div>
+
+<p>You author code in <code class="language-plaintext highlighter-rouge">src/</code>. HarborClient loads the bundled files in <code class="language-plaintext highlighter-rouge">dist/</code> at runtime. Optional folders like <code class="language-plaintext highlighter-rouge">assets/</code> hold icons and screenshots for the Settings → Plugins detail page.</p>
+
+<h2 id="write-the-manifest">Write the manifest</h2>
+
+<p>Every plugin needs a <code class="language-plaintext highlighter-rouge">manifest.json</code> at the project root. For the audit tab, keep it minimal:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.example.request-audit"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Request Audit"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"engines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"harborclient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&gt;=1.9.0"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"renderer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist/renderer.js"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ui"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"contributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"requestTabs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"audit"</span><span class="p">,</span><span class="w"> </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Audit"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>A few fields matter here:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">id</code></strong> — reverse-DNS identifier. HarborClient uses it to namespace storage and track updates.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">engines.harborclient</code></strong> — minimum app version your plugin requires.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">permissions</code></strong> — capabilities shown in the install dialog. This plugin only needs <code class="language-plaintext highlighter-rouge">ui</code>.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">contributes.requestTabs</code></strong> — declares a tab slot before your code runs.</li>
+</ul>
+
+<p>There is an important contract between the manifest and your code: contribution <code class="language-plaintext highlighter-rouge">id</code> values must match what you pass to registration calls. Here, the manifest declares <code class="language-plaintext highlighter-rouge">"id": "audit"</code>, so your renderer must call <code class="language-plaintext highlighter-rouge">registerRequestTab({ id: 'audit', ... })</code>.</p>
+
+<h2 id="write-the-renderer-entry">Write the renderer entry</h2>
+
+<p>Create <code class="language-plaintext highlighter-rouge">src/renderer.tsx</code>. Every renderer plugin starts with two steps: wire up React from the host, then register contributions inside <code class="language-plaintext highlighter-rouge">activate()</code>.</p>
+
+<div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">installReact</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="kd">type</span> <span class="p">{</span> <span class="nx">PluginContext</span><span class="p">,</span> <span class="nx">RequestTabContext</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nf">AuditTab</span><span class="p">({</span> <span class="nx">context</span> <span class="p">}:</span> <span class="p">{</span> <span class="nl">context</span><span class="p">:</span> <span class="nx">RequestTabContext</span> <span class="p">})</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="p">{</span> <span class="nx">draft</span><span class="p">,</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">context</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">summary</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+    <span class="na">headerCount</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nf">filter</span><span class="p">((</span><span class="nx">h</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">h</span><span class="p">.</span><span class="nx">enabled</span> <span class="o">&amp;&amp;</span> <span class="nx">h</span><span class="p">.</span><span class="nx">key</span><span class="p">).</span><span class="nx">length</span><span class="p">,</span>
+    <span class="na">hasBody</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nf">trim</span><span class="p">().</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">lastStatus</span><span class="p">:</span> <span class="nx">response</span><span class="p">?.</span><span class="nx">status</span> <span class="o">??</span> <span class="kc">null</span>
+  <span class="p">};</span>
+
+  <span class="k">return </span><span class="p">(</span>
+    <span class="p">&lt;</span><span class="nt">pre</span> <span class="na">className</span><span class="p">=</span><span class="s">"m-0 overflow-auto rounded-md bg-control p-3 text-[14px] text-text"</span><span class="p">&gt;</span>
+      <span class="si">{</span><span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">(</span><span class="nx">summary</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+    <span class="p">&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">hc</span><span class="p">:</span> <span class="nx">PluginContext</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+  <span class="nf">installReact</span><span class="p">(</span><span class="nx">hc</span><span class="p">.</span><span class="nx">react</span><span class="p">);</span>
+  <span class="nx">hc</span><span class="p">.</span><span class="nx">subscriptions</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span>
+    <span class="nx">hc</span><span class="p">.</span><span class="nx">ui</span><span class="p">.</span><span class="nf">registerRequestTab</span><span class="p">({</span>
+      <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">audit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Audit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">Component</span><span class="p">:</span> <span class="nx">AuditTab</span>
+    <span class="p">})</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Three things to notice:</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">installReact(hc.react)</code></strong> — the host provides React. Do not bundle <code class="language-plaintext highlighter-rouge">react</code> or <code class="language-plaintext highlighter-rouge">react-dom</code> in your plugin.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">RequestTabContext</code></strong> — gives you the active draft and the last response. The tab re-renders locally when the user edits the request — no IPC round-trip per keystroke.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">hc.subscriptions</code></strong> — every <code class="language-plaintext highlighter-rouge">register*</code> call returns a disposable. Push it here so HarborClient cleans up automatically when the plugin deactivates.</li>
+</ol>
+
+<h2 id="configure-the-build">Configure the build</h2>
+
+<p>Bundle with esbuild. A typical renderer build script looks like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>esbuild src/renderer.tsx <span class="se">\</span>
+  <span class="nt">--bundle</span> <span class="nt">--outfile</span><span class="o">=</span>dist/renderer.js <span class="nt">--format</span><span class="o">=</span>esm <span class="se">\</span>
+  <span class="nt">--jsx</span><span class="o">=</span>automatic <span class="nt">--jsx-import-source</span><span class="o">=</span>@harborclient/plugin-api <span class="se">\</span>
+  <span class="nt">--external</span>:react <span class="nt">--external</span>:react-dom
+</code></pre></div></div>
+
+<p>In <code class="language-plaintext highlighter-rouge">package.json</code>, wire that into <code class="language-plaintext highlighter-rouge">dev</code> and <code class="language-plaintext highlighter-rouge">build</code> scripts. Use <code class="language-plaintext highlighter-rouge">--watch</code> on the dev script so rebuilds happen automatically while you edit.</p>
+
+<p>For TypeScript, set <code class="language-plaintext highlighter-rouge">jsx: "react-jsx"</code> and <code class="language-plaintext highlighter-rouge">jsxImportSource: "@harborclient/plugin-api"</code> in <code class="language-plaintext highlighter-rouge">tsconfig.json</code>. Import types from <code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code> and export <code class="language-plaintext highlighter-rouge">activate</code> (and optionally <code class="language-plaintext highlighter-rouge">deactivate</code>) as named exports.</p>
+
+<h2 id="develop-with-unpacked-loading">Develop with unpacked loading</h2>
+
+<p>You do not need to package a <code class="language-plaintext highlighter-rouge">.hcp</code> file on every change. HarborClient can load your project folder directly while you develop.</p>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">pnpm dev</code> to start esbuild in watch mode.</li>
+  <li>In HarborClient, open <strong>Settings → Plugins</strong> and click <strong>Load unpacked…</strong>. Select your plugin project folder.</li>
+  <li>Open a request in the editor and click the <strong>Audit</strong> tab. That triggers plugin activation.</li>
+  <li>Edit your source, save, and wait for esbuild to rebuild. HarborClient watches <code class="language-plaintext highlighter-rouge">manifest.json</code> and entry files, debounces briefly, then deactivates and re-activates your plugin.</li>
+</ol>
+
+<p>For day-to-day work on the same plugin, you can register the path at startup:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">HARBOR_PLUGINS_DEV</span><span class="o">=</span>~/projects/my-plugin harborclient
+</code></pre></div></div>
+
+<p>Or pass <code class="language-plaintext highlighter-rouge">--plugin-dev ~/projects/my-plugin</code> on the command line. The plugin appears in Settings → Plugins the same way as one loaded through the UI.</p>
+
+<h2 id="going-further">Going further</h2>
+
+<p>Once the audit tab works, you can explore other APIs without changing the basic shape of a plugin.</p>
+
+<h3 id="main-entry-for-http-hooks">Main entry for HTTP hooks</h3>
+
+<p>UI code belongs in the renderer entry. If you need to <strong>mutate</strong> outgoing requests — inject headers, sign payloads, add trace IDs — add a separate main entry that runs in the SES utility process:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="kd">type</span> <span class="p">{</span> <span class="nx">MainPluginContext</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/main</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">hc</span><span class="p">:</span> <span class="nx">MainPluginContext</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+  <span class="nx">hc</span><span class="p">.</span><span class="nx">subscriptions</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span>
+    <span class="nx">hc</span><span class="p">.</span><span class="nx">http</span><span class="p">.</span><span class="nf">onBeforeSend</span><span class="p">((</span><span class="nx">request</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="dl">'</span><span class="s1">X-Trace</span><span class="dl">'</span><span class="p">]</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">1</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">})</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Reference it in <code class="language-plaintext highlighter-rouge">manifest.json</code> with <code class="language-plaintext highlighter-rouge">"main": "dist/main.js"</code> and add the <code class="language-plaintext highlighter-rouge">"http"</code> permission. For read-only logging after a send, renderer-side <code class="language-plaintext highlighter-rouge">hc.http.onAfterSend</code> is often simpler — no main entry required.</p>
+
+<h3 id="permissions">Permissions</h3>
+
+<p>HarborClient shows requested permissions before install. Common grants:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Permission</th>
+      <th>Grants</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ui</code></td>
+      <td>Settings panels, tabs, themes, menus, toasts</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">storage</code></td>
+      <td>Namespaced persistent key-value storage</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filesystem:pick</code></td>
+      <td>Open and save file dialogs</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filesystem:read</code> / <code class="language-plaintext highlighter-rouge">filesystem:write</code></td>
+      <td>Read or write allowlisted paths</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">http</code></td>
+      <td>Before/after send hooks</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ipc</code></td>
+      <td>Custom channels between renderer and main</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Request only what you need. Users see the full list in the install confirmation dialog.</p>
+
+<h3 id="other-ui-contributions">Other UI contributions</h3>
+
+<p>The same registration pattern works for other surfaces. A settings section is often the simplest next step after a request tab:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">hc</span><span class="p">.</span><span class="nx">ui</span><span class="p">.</span><span class="nf">registerSettingsSection</span><span class="p">({</span>
+  <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myPlugin.settings</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">My Plugin</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">Component</span><span class="p">:</span> <span class="nx">SettingsPanel</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>You can also add sidebar panels, response tabs, footer panels, toolbar actions, context menu items, status bar entries, and custom themes. See the <a href="https://harborclient.github.io/plugin-api/renderer-ui.html">UI contributions reference</a> for the full list.</p>
+
+<h3 id="sdk-helpers">SDK helpers</h3>
+
+<p>The npm package ships utility subpaths for common plugin tasks (requires <code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code> 0.3.1+):</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">resolveRequest</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/http</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createCappedList</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/storage</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">methodColorClass</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/ui</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">randomId</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/runtime-utils</span><span class="dl">'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">resolveRequest</code> mirrors HarborClient’s send-time variable substitution — useful if you build history or audit plugins that need the resolved URL and headers.</p>
+
+<h2 id="package-and-distribute">Package and distribute</h2>
+
+<p>When you are ready to ship, build and zip:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pnpm build
+zip <span class="nt">-r</span> ../request-audit.hcp manifest.json README.md assets dist
+</code></pre></div></div>
+
+<p>Install the <code class="language-plaintext highlighter-rouge">.hcp</code> file through <strong>Settings → Plugins</strong>. To publish to the HarborClient plugin marketplace, open a pull request against the <a href="https://github.com/harborclient/harborclient/blob/main/plugins/catalog.json">plugin catalog</a> with a link to a public repository containing prebuilt files.</p>
+
+<h2 id="checklist">Checklist</h2>
+
+<p>Before you share your plugin, confirm:</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Scaffolded project with <code class="language-plaintext highlighter-rouge">@harborclient/plugin-skeleton</code></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Manifest declares permissions and contributions</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Renderer entry calls <code class="language-plaintext highlighter-rouge">installReact</code> and registers UI on <code class="language-plaintext highlighter-rouge">hc.subscriptions</code></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />esbuild marks React as external</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Tested with Load unpacked and hot reload</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Packaged as <code class="language-plaintext highlighter-rouge">.hcp</code> for distribution</li>
+</ul>
+
+<p>For the full API reference, worked examples, and performance guidelines, keep the <a href="https://harborclient.github.io/plugin-api/">plugin API docs</a> open while you build.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="testing" /><category term="tools" /><summary type="html"><![CDATA[HarborClient plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a .hcp file, which is really just a ZIP archive with a friendly extension.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/writing-a-harborclient-plugin.png" /><media:content medium="image" url="http://localhost:4001/assets/images/writing-a-harborclient-plugin.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">HarborClient Adds Plugin Support</title><link href="http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support.html" rel="alternate" type="text/html" title="HarborClient Adds Plugin Support" /><published>2026-06-24T14:00:00-04:00</published><updated>2026-06-24T14:00:00-04:00</updated><id>http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support</id><content type="html" xml:base="http://localhost:4001/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support.html"><![CDATA[<p><a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient 1.8.0</a> now supports installable plugins — extensions that add UI, themes, and HTTP hooks without waiting for a new app release. The full announcement is on the <a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient blog</a>; here are the highlights.</p>
 
 <blockquote>
   <p>Starting in HarborClient 1.8.0, you can go further: installable plugins that extend the app without waiting for a new release.</p>
@@ -1222,438 +1678,4 @@ GET /users/123
 
 <p>HTTP caching works best when each endpoint has a clear freshness policy. Do not rely on defaults, and do not treat all responses the same.</p>
 
-<p>Cache public, stable data aggressively. Revalidate data that changes. Keep sensitive or personalized responses private or unstored. Those choices can improve performance without turning stale data into a production incident.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="http" /><category term="caching" /><summary type="html"><![CDATA[Caching is one of the most effective ways to make REST APIs faster, but it is also easy to get wrong. A stale public profile is annoying. A stale billing response is a serious bug.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/http-caching-for-rest-apis.png" /><media:content medium="image" url="http://localhost:4001/assets/images/http-caching-for-rest-apis.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Writing REST APIs that Developers Will Love</title><link href="http://localhost:4001/rest-api/design/2026/01/21/writing-rest-apis-that-developers-will-love.html" rel="alternate" type="text/html" title="Writing REST APIs that Developers Will Love" /><published>2026-01-21T07:00:00-05:00</published><updated>2026-01-21T07:00:00-05:00</updated><id>http://localhost:4001/rest-api/design/2026/01/21/writing-rest-apis-that-developers-will-love</id><content type="html" xml:base="http://localhost:4001/rest-api/design/2026/01/21/writing-rest-apis-that-developers-will-love.html"><![CDATA[<p>Developers judge an API quickly. The first request either feels obvious or it does not. A URL that makes sense, a response that matches expectations, and an error message that actually helps — those details add up to an API people want to use.</p>
-
-<p>This guide covers practical design choices that make REST APIs easier to learn, harder to misuse, and more pleasant to integrate with.</p>
-
-<h2 id="start-with-resources-not-actions">Start with resources, not actions</h2>
-
-<p>REST APIs work best when URLs represent <strong>nouns</strong> (resources), not verbs (operations).</p>
-
-<p>Good:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET    /users/42
-POST   /users
-PATCH  /users/42
-DELETE /users/42
-</code></pre></div></div>
-
-<p>Avoid:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST /getUser
-POST /createUser
-POST /deleteUserById
-</code></pre></div></div>
-
-<p>Use HTTP methods to express intent. <code class="language-plaintext highlighter-rouge">GET</code> reads, <code class="language-plaintext highlighter-rouge">POST</code> creates, <code class="language-plaintext highlighter-rouge">PUT</code> replaces, <code class="language-plaintext highlighter-rouge">PATCH</code> updates partially, and <code class="language-plaintext highlighter-rouge">DELETE</code> removes. When every endpoint is a <code class="language-plaintext highlighter-rouge">POST</code> with a different action name, clients lose the predictability that makes REST worth using.</p>
-
-<p>Nested resources are fine when the relationship is clear:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /users/42/posts
-GET /users/42/posts/7
-</code></pre></div></div>
-
-<p>Keep nesting shallow. If a path grows past two levels, consider flattening:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /posts?user_id=42
-</code></pre></div></div>
-
-<h2 id="use-http-status-codes-consistently">Use HTTP status codes consistently</h2>
-
-<p>Status codes communicate outcome before the client parses the body. Use them consistently across the API:</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>Code</th>
-      <th>When to use</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">200 OK</code></td>
-      <td>Successful read or update with a response body</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">201 Created</code></td>
-      <td>Resource created; include a <code class="language-plaintext highlighter-rouge">Location</code> header when possible</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">204 No Content</code></td>
-      <td>Successful delete or update with no body</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">400 Bad Request</code></td>
-      <td>Invalid input the client can fix</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">401 Unauthorized</code></td>
-      <td>Missing or invalid authentication</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">403 Forbidden</code></td>
-      <td>Authenticated but not allowed</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">404 Not Found</code></td>
-      <td>Resource does not exist (or is not visible to this caller)</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">409 Conflict</code></td>
-      <td>Duplicate or state conflict</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">422 Unprocessable Entity</code></td>
-      <td>Valid syntax but business rule failure</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">429 Too Many Requests</code></td>
-      <td>Rate limit exceeded</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">500 Internal Server Error</code></td>
-      <td>Unexpected server failure</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Do not return <code class="language-plaintext highlighter-rouge">200 OK</code> with an error payload. Clients that rely on status codes — and most HTTP libraries do — will treat the request as successful. Pick one error shape and one set of status rules, then apply them everywhere.</p>
-
-<h2 id="design-errors-developers-can-act-on">Design errors developers can act on</h2>
-
-<p>A useful error response answers three questions:</p>
-
-<ol>
-  <li>What went wrong?</li>
-  <li>Which field or parameter caused it?</li>
-  <li>What should the client do next?</li>
-</ol>
-
-<p>Example:</p>
-
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"validation_failed"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"One or more fields are invalid."</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"details"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nl">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span><span class="w">
-        </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Must be a valid email address."</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
-
-<p>Stable <code class="language-plaintext highlighter-rouge">code</code> values matter more than clever messages. Messages can change; codes should not. Document every error code in your API reference so integrators know what to handle programmatically.</p>
-
-<h2 id="keep-request-and-response-shapes-predictable">Keep request and response shapes predictable</h2>
-
-<p>Developers build mental models from patterns. Reuse them.</p>
-
-<ul>
-  <li>Use <strong>snake_case</strong> or <strong>camelCase</strong> consistently — pick one and stick with it across every endpoint</li>
-  <li>Return the same resource representation from <code class="language-plaintext highlighter-rouge">GET</code>, <code class="language-plaintext highlighter-rouge">POST</code>, and <code class="language-plaintext highlighter-rouge">PATCH</code> where possible</li>
-  <li>Include an <code class="language-plaintext highlighter-rouge">id</code> field on every resource</li>
-  <li>Use ISO 8601 for timestamps: <code class="language-plaintext highlighter-rouge">2026-01-21T12:00:00Z</code></li>
-  <li>Represent enums as strings, not opaque integers</li>
-</ul>
-
-<p>For collections, return a consistent wrapper:</p>
-
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w"> </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"First post"</span><span class="w"> </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w"> </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Second post"</span><span class="w"> </span><span class="p">}</span><span class="w">
-  </span><span class="p">],</span><span class="w">
-  </span><span class="nl">"pagination"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"limit"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">142</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
-
-<p>Avoid surprising clients with different field names or nesting on similar endpoints. Consistency reduces integration time more than any single clever shortcut.</p>
-
-<h2 id="support-pagination-filtering-and-sorting">Support pagination, filtering, and sorting</h2>
-
-<p>List endpoints that return unbounded arrays do not scale — for your database or for the client waiting on a multi-megabyte response.</p>
-
-<p>Common query parameters:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /posts?page=2&amp;limit=20
-GET /posts?sort=-created_at
-GET /posts?status=published&amp;author_id=42
-</code></pre></div></div>
-
-<p>Cursor-based pagination works better for large or frequently changing datasets:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /posts?cursor=eyJpZCI6MTIzfQ&amp;limit=20
-</code></pre></div></div>
-
-<p>Document defaults (<code class="language-plaintext highlighter-rouge">limit=20</code>, <code class="language-plaintext highlighter-rouge">sort=created_at</code>) and maximums (<code class="language-plaintext highlighter-rouge">limit</code> capped at 100). Clients should not have to guess whether pagination is offset- or cursor-based.</p>
-
-<h2 id="make-authentication-straightforward">Make authentication straightforward</h2>
-
-<p>Most APIs use bearer tokens, API keys, or OAuth 2.0. Whatever you choose, make the contract obvious:</p>
-
-<ul>
-  <li>Document where credentials go (<code class="language-plaintext highlighter-rouge">Authorization: Bearer …</code> or a named header)</li>
-  <li>Return <code class="language-plaintext highlighter-rouge">401</code> when credentials are missing or invalid</li>
-  <li>Return <code class="language-plaintext highlighter-rouge">403</code> when credentials are valid but insufficient</li>
-  <li>Avoid mixing auth schemes across endpoints without a clear reason</li>
-</ul>
-
-<p>If tokens expire, provide a refresh flow or clear instructions for obtaining a new token. Silent expiry with cryptic <code class="language-plaintext highlighter-rouge">403</code> responses is a common source of support tickets.</p>
-
-<h2 id="version-your-api-deliberately">Version your API deliberately</h2>
-
-<p>APIs change. Versioning gives you room to evolve without breaking existing clients.</p>
-
-<p>Common approaches:</p>
-
-<ul>
-  <li><strong>URL prefix</strong> — <code class="language-plaintext highlighter-rouge">/v1/users</code> (simple, visible, widely understood)</li>
-  <li><strong>Header</strong> — <code class="language-plaintext highlighter-rouge">Accept: application/vnd.myapp.v1+json</code> (clean URLs, harder to discover)</li>
-  <li><strong>Query parameter</strong> — <code class="language-plaintext highlighter-rouge">/users?version=1</code> (works, but easy to forget)</li>
-</ul>
-
-<p>Pick one strategy and apply it consistently. When you ship breaking changes, increment the version and keep the old version running long enough for clients to migrate. Deprecation headers (<code class="language-plaintext highlighter-rouge">Deprecation</code>, <code class="language-plaintext highlighter-rouge">Sunset</code>) give integrators a timeline instead of a surprise.</p>
-
-<h2 id="write-documentation-that-matches-the-api">Write documentation that matches the API</h2>
-
-<p>Reference docs should show real requests and real responses — not abstract field lists alone.</p>
-
-<p>Every endpoint page should include:</p>
-
-<ul>
-  <li>Method and path</li>
-  <li>Required and optional parameters</li>
-  <li>Example request with headers and body</li>
-  <li>Example success response</li>
-  <li>Example error responses</li>
-  <li>Auth requirements</li>
-</ul>
-
-<p>OpenAPI (Swagger) specs are worth the investment. They power interactive docs, client generation, and contract tests. Keep the spec close to the code or generate it from source so it does not drift.</p>
-
-<h2 id="provide-working-examples">Provide working examples</h2>
-
-<p>Developers learn fastest by sending a request and getting a response. Lower the barrier:</p>
-
-<ul>
-  <li>Publish a <strong>Postman collection</strong> or equivalent for your API</li>
-  <li>Include curl examples in documentation</li>
-  <li>Offer a <strong>sandbox environment</strong> with test credentials</li>
-  <li>Seed sandbox data so list endpoints return meaningful results on the first call</li>
-</ul>
-
-<p>An API with a five-minute quickstart beats one that requires reading thirty pages before the first successful request.</p>
-
-<h2 id="design-for-backwards-compatibility">Design for backwards compatibility</h2>
-
-<p>Breaking changes erode trust. Prefer additive changes:</p>
-
-<ul>
-  <li>Add new optional fields instead of renaming existing ones</li>
-  <li>Add new endpoints instead of changing semantics on old ones</li>
-  <li>Default new behavior off or preserve old behavior when possible</li>
-</ul>
-
-<p>When a change is unavoidable, communicate early:</p>
-
-<ol>
-  <li>Mark the old behavior as deprecated</li>
-  <li>Document the replacement</li>
-  <li>Set a sunset date</li>
-  <li>Monitor usage of deprecated endpoints before removal</li>
-</ol>
-
-<p>Clients forgive evolution. They do not forgive silent breakage.</p>
-
-<h2 id="a-practical-design-checklist">A practical design checklist</h2>
-
-<p>Before shipping an endpoint, run through this list:</p>
-
-<ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />URL represents a resource, not an action</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />HTTP method matches the operation</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Status codes used consistently</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Error responses include a stable code and actionable details</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Request and response field naming matches the rest of the API</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />List endpoints support pagination</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Auth requirements are documented and enforced consistently</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Examples in docs match actual behavior</li>
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Breaking changes are versioned or deprecated with notice</li>
-</ul>
-
-<h2 id="closing-thoughts">Closing thoughts</h2>
-
-<p>Developers do not love APIs because they are RESTful on paper. They love APIs that are <strong>predictable</strong>, <strong>consistent</strong>, and <strong>easy to debug</strong> when something goes wrong.</p>
-
-<p>Start with clear resource URLs and honest status codes. Add structured errors, stable pagination, and documentation with real examples. Treat backwards compatibility as a feature, not an afterthought. Those choices compound — each good decision makes the next integration faster and each bad one becomes someone else’s workaround.</p>
-
-<p>Build the API you would want to integrate with on a Friday afternoon. That is the bar worth hitting.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="design" /><summary type="html"><![CDATA[Developers judge an API quickly. The first request either feels obvious or it does not. A URL that makes sense, a response that matches expectations, and an error message that actually helps — those details add up to an API people want to use.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/writing-rest-apis-developers-love.png" /><media:content medium="image" url="http://localhost:4001/assets/images/writing-rest-apis-developers-love.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">API Authentication Compared: API Keys, JWT, and OAuth 2.0</title><link href="http://localhost:4001/rest-api/authentication/security/2025/12/16/api-authentication-compared-api-keys-jwt-and-oauth-2-0.html" rel="alternate" type="text/html" title="API Authentication Compared: API Keys, JWT, and OAuth 2.0" /><published>2025-12-16T08:10:00-05:00</published><updated>2025-12-16T08:10:00-05:00</updated><id>http://localhost:4001/rest-api/authentication/security/2025/12/16/api-authentication-compared-api-keys-jwt-and-oauth-2-0</id><content type="html" xml:base="http://localhost:4001/rest-api/authentication/security/2025/12/16/api-authentication-compared-api-keys-jwt-and-oauth-2-0.html"><![CDATA[<p>API authentication answers a simple question: who is calling? The right answer depends on the kind of client, the sensitivity of the data, and how much delegation the system needs.</p>
-
-<p>API keys, JWTs, and OAuth 2.0 are often discussed together, but they solve different problems.</p>
-
-<h2 id="api-keys">API keys</h2>
-
-<p>An API key is a secret string assigned to an application, account, or user.</p>
-
-<p>Common request pattern:</p>
-
-<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">GET /v1/reports
-Authorization: Bearer sk_live_123
-</span></code></pre></div></div>
-
-<p>Some APIs use a custom header:</p>
-
-<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">X-API-Key: sk_live_123
-</span></code></pre></div></div>
-
-<p>API keys are simple and work well for server-to-server integrations, internal tools, and low-friction developer onboarding.</p>
-
-<h3 id="strengths">Strengths</h3>
-
-<ul>
-  <li>Easy to issue and use</li>
-  <li>Good fit for scripts and backend services</li>
-  <li>Easy to rotate if each client has its own key</li>
-  <li>Simple to rate limit and audit by key</li>
-</ul>
-
-<h3 id="weaknesses">Weaknesses</h3>
-
-<ul>
-  <li>Usually long-lived</li>
-  <li>Often copied into config files or CI secrets</li>
-  <li>Do not represent delegated user consent by themselves</li>
-  <li>Need careful storage and rotation</li>
-</ul>
-
-<p>Treat API keys like passwords. Store only hashed keys if possible, show the full key once, and support revocation.</p>
-
-<h2 id="jwts">JWTs</h2>
-
-<p>A JWT, or JSON Web Token, is a signed token that carries claims.</p>
-
-<p>Example claims:</p>
-
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"usr_123"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://auth.example.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"api.example.com"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1765900000</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"scope"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orders:read"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre></div></div>
-
-<p>APIs commonly receive JWTs as bearer tokens:</p>
-
-<div class="language-http highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">Authorization: Bearer eyJhbGciOi...
-</span></code></pre></div></div>
-
-<p>The API verifies the token signature, checks expiration, validates issuer and audience, then uses the claims for authorization decisions.</p>
-
-<h3 id="strengths-1">Strengths</h3>
-
-<ul>
-  <li>Self-contained claims can reduce auth server lookups</li>
-  <li>Works well across services</li>
-  <li>Supports short-lived access tokens</li>
-  <li>Common in modern identity systems</li>
-</ul>
-
-<h3 id="weaknesses-1">Weaknesses</h3>
-
-<ul>
-  <li>Harder to revoke before expiration</li>
-  <li>Easy to validate incorrectly</li>
-  <li>Token size can grow quickly</li>
-  <li>Claims can become stale if user permissions change</li>
-</ul>
-
-<p>JWTs are not automatically secure. The value comes from correct validation, short lifetimes, and careful claim design.</p>
-
-<h2 id="oauth-20">OAuth 2.0</h2>
-
-<p>OAuth 2.0 is an authorization framework. It lets a user grant one application access to resources without sharing their password.</p>
-
-<p>A typical web app flow looks like:</p>
-
-<ol>
-  <li>The client redirects the user to the authorization server.</li>
-  <li>The user signs in and grants consent.</li>
-  <li>The client receives an authorization code.</li>
-  <li>The client exchanges the code for tokens.</li>
-  <li>The API receives an access token on each request.</li>
-</ol>
-
-<p>OAuth 2.0 access tokens are often JWTs, but they do not have to be. OAuth describes the flow and responsibilities, not just the token format.</p>
-
-<h3 id="strengths-2">Strengths</h3>
-
-<ul>
-  <li>Best fit for third-party delegated access</li>
-  <li>Supports scopes and consent</li>
-  <li>Separates authorization server from resource API</li>
-  <li>Mature patterns for web, mobile, and device clients</li>
-</ul>
-
-<h3 id="weaknesses-2">Weaknesses</h3>
-
-<ul>
-  <li>More moving parts than API keys</li>
-  <li>Requires careful redirect URI and client configuration</li>
-  <li>Easy to choose the wrong grant type</li>
-  <li>Overkill for simple internal APIs</li>
-</ul>
-
-<p>For browser and mobile apps, use Authorization Code with PKCE. Avoid old implicit-flow patterns for new applications.</p>
-
-<h2 id="which-one-should-you-choose">Which one should you choose?</h2>
-
-<p>For server-to-server integrations, API keys are often enough if they are scoped, rate limited, and easy to rotate.</p>
-
-<p>For first-party apps with a central identity provider, short-lived JWT access tokens are common and practical.</p>
-
-<p>For third-party apps accessing user data, OAuth 2.0 is the right model because it handles consent, scopes, and delegation.</p>
-
-<h2 id="authorization-still-matters">Authorization still matters</h2>
-
-<p>Authentication identifies the caller. Authorization decides what the caller can do.</p>
-
-<p>After validating a credential, still check:</p>
-
-<ul>
-  <li>Does this caller have access to this account or resource?</li>
-  <li>Does the token or key include the required scope?</li>
-  <li>Is the action allowed by role or policy?</li>
-  <li>Has the credential been revoked or disabled?</li>
-</ul>
-
-<p>A valid token should not mean unlimited access.</p>
-
-<h2 id="operational-basics">Operational basics</h2>
-
-<p>Whatever scheme you choose, support:</p>
-
-<ul>
-  <li>TLS only</li>
-  <li>Secret rotation</li>
-  <li>Credential revocation</li>
-  <li>Audit logs</li>
-  <li>Rate limits</li>
-  <li>Least-privilege scopes</li>
-  <li>Clear <code class="language-plaintext highlighter-rouge">401</code> and <code class="language-plaintext highlighter-rouge">403</code> errors</li>
-</ul>
-
-<p>Most authentication incidents come from operational gaps, not from the choice of token format alone.</p>
-
-<h2 id="closing-thoughts">Closing thoughts</h2>
-
-<p>API keys are simple, JWTs are portable, and OAuth 2.0 handles delegated access. They can also work together: an OAuth access token may be a JWT, and an internal service may still use an API key for automation.</p>
-
-<p>Choose the smallest model that fits the trust boundary. Then invest in validation, rotation, scopes, and monitoring. That is where authentication becomes reliable in production.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="authentication" /><category term="security" /><summary type="html"><![CDATA[API authentication answers a simple question: who is calling? The right answer depends on the kind of client, the sensitivity of the data, and how much delegation the system needs.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/api-authentication-compared-api-keys-jwt-and-oauth-2-0.png" /><media:content medium="image" url="http://localhost:4001/assets/images/api-authentication-compared-api-keys-jwt-and-oauth-2-0.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>
+<p>Cache public, stable data aggressively. Revalidate data that changes. Keep sensitive or personalized responses private or unstored. Those choices can improve performance without turning stale data into a production incident.</p>]]></content><author><name>Sean</name></author><category term="rest-api" /><category term="http" /><category term="caching" /><summary type="html"><![CDATA[Caching is one of the most effective ways to make REST APIs faster, but it is also easy to get wrong. A stale public profile is annoying. A stale billing response is a serious bug.]]></summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4001/assets/images/http-caching-for-rest-apis.png" /><media:content medium="image" url="http://localhost:4001/assets/images/http-caching-for-rest-apis.png" xmlns:media="http://search.yahoo.com/mrss/" /></entry></feed>

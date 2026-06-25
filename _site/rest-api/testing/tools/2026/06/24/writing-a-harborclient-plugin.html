@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/images/favicon.png" type="image/png"><!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Writing a HarborClient Plugin | Application-to-Web Internals</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Writing a HarborClient Plugin" />
+<meta name="author" content="Sean" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="HarborClient plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a .hcp file, which is really just a ZIP archive with a friendly extension." />
+<meta name="twitter:description" property="og:description" content="HarborClient plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a .hcp file, which is really just a ZIP archive with a friendly extension." />
+<link rel="canonical" href="http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html" />
+<meta property="og:url" content="http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html" />
+<meta property="og:site_name" content="Application-to-Web Internals" />
+<meta property="og:image" content="http://localhost:4001/assets/images/writing-a-harborclient-plugin.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-06-24T16:00:00-04:00" />
+<meta property="article:modified_time" content="2026-06-24T16:00:00-04:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="http://localhost:4001/assets/images/writing-a-harborclient-plugin.png" />
+<meta name="twitter:title" content="Writing a HarborClient Plugin" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Sean"},"dateModified":"2026-06-24T16:00:00-04:00","datePublished":"2026-06-24T16:00:00-04:00","description":"HarborClient plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a .hcp file, which is really just a ZIP archive with a friendly extension.","headline":"Writing a HarborClient Plugin","image":"http://localhost:4001/assets/images/writing-a-harborclient-plugin.png","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html"},"url":"http://localhost:4001/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="stylesheet" href="/assets/custom.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4001/feed.xml" title="Application-to-Web Internals" /></head><body><header class="site-header" role="banner">
+  <div class="wrapper header-inner">
+    <a class="site-brand" rel="author" href="/" aria-label="Application-to-Web Internals home">
+      <span class="site-logo" aria-hidden="true">
+        <img class="site-logo-mark" src="/assets/images/site-logo-mark.svg" alt="" width="44"
+          height="44">
+      </span>
+      <span class="site-title">Application-to-Web Internals</span>
+    </a><nav class="site-nav" aria-label="Main navigation">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+      <label for="nav-trigger">
+        <span class="menu-icon">
+          <svg viewBox="0 0 18 15" width="18px" height="15px" aria-hidden="true">
+            <path
+              d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,11.997,18,12.663,18,13.516z" />
+          </svg>
+        </span>
+      </label>
+
+      <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/">Home</a><a class="page-link page-link--rss" href="/feed.xml">RSS</a>
+      </div>
+    </nav></div>
+</header><main class="page-content" aria-label="Content">
+    <div class="wrapper"><div class="page-layout">
+        <div class="page-layout__main"><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header"><div class="post-categories"><span class="post-category">rest-api</span><span class="post-category">testing</span><span class="post-category">tools</span></div><h1 class="post-title p-name" itemprop="name headline">Writing a HarborClient Plugin</h1><figure class="post-featured-image"><img src="/assets/images/writing-a-harborclient-plugin.png" alt="A harbor scene with glowing modular plugin blocks and code, representing HarborClient plugin development" loading="eager" decoding="async"></figure><div class="post-meta">
+      <time class="dt-published" datetime="2026-06-24T16:00:00-04:00" itemprop="datePublished">
+        Jun 24, 2026
+      </time><span class="post-meta-sep" aria-hidden="true">&middot;</span>
+      <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-author h-card" itemprop="name">Sean</span>
+      </span></div>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><a href="https://harborclient.com/">HarborClient</a> plugins let you extend the app with installable packages — custom tabs, sidebar panels, themes, HTTP hooks, and persistent storage — without waiting for a new release. Each plugin ships as a <code class="language-plaintext highlighter-rouge">.hcp</code> file, which is really just a ZIP archive with a friendly extension.</p>
+
+<p>If you have not read the announcement yet, start with <a href="https://harborclient-blog.com/2026/06/24/harborclient-adds-plugin-support/">HarborClient Adds Plugin Support</a> for the big picture. This guide walks through building your first plugin step by step, using the official <a href="https://harborclient.github.io/plugin-api/">plugin API docs</a> as reference.</p>
+
+<p>HarborClient already has <a href="https://harborclient.com/request-scripts">request scripts</a> that run once per send inside a sandboxed utility process. Plugins are different: they are long-lived extensions with a broader API suited to UI contributions, themes, storage, and HTTP hooks that stay active until you disable the plugin.</p>
+
+<h2 id="what-you-will-build">What you will build</h2>
+
+<p>You will create a <strong>Request Audit</strong> tab — a read-only panel in the request editor that summarizes the active draft as JSON: method, URL, header count, whether a body is present, and the last response status.</p>
+
+<p>This example comes straight from the <a href="https://harborclient.github.io/plugin-api/examples/request-audit-tab.html">request audit tab docs</a>. It is a good first plugin because it needs only the <code class="language-plaintext highlighter-rouge">ui</code> permission and a single renderer entry — no main-process code, no IPC, no filesystem access.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>Before you start, make sure you have:</p>
+
+<ul>
+  <li><strong>HarborClient 1.8.0 or later</strong> — base plugin support. Use <strong>1.9.0+</strong> if you want <code class="language-plaintext highlighter-rouge">hc.pluginId</code>, renderer-side <code class="language-plaintext highlighter-rouge">onAfterSend</code>, or <code class="language-plaintext highlighter-rouge">hc.host.openRequestDraft</code>.</li>
+  <li><strong>Node.js</strong> and <strong>pnpm</strong></li>
+  <li><strong><code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code></strong> as a dev dependency in your plugin project</li>
+</ul>
+
+<h2 id="scaffold-the-project">Scaffold the project</h2>
+
+<p>The fastest way to start is the official skeleton:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx @harborclient/plugin-skeleton@latest
+<span class="nb">cd </span>my-plugin
+pnpm <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>You can also clone the <a href="https://github.com/harborclient/plugin-skeleton">plugin-skeleton repo</a> and adapt it. Either way, you get a project layout, TypeScript config, and esbuild scripts ready to go.</p>
+
+<h2 id="understand-the-package-layout">Understand the package layout</h2>
+
+<p>A plugin project mirrors what goes inside a <code class="language-plaintext highlighter-rouge">.hcp</code> file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my-plugin/
+├── manifest.json
+├── README.md
+├── src/
+│   └── renderer.tsx      # your source — not loaded at runtime
+└── dist/
+    └── renderer.js       # bundled output — referenced by manifest
+</code></pre></div></div>
+
+<p>You author code in <code class="language-plaintext highlighter-rouge">src/</code>. HarborClient loads the bundled files in <code class="language-plaintext highlighter-rouge">dist/</code> at runtime. Optional folders like <code class="language-plaintext highlighter-rouge">assets/</code> hold icons and screenshots for the Settings → Plugins detail page.</p>
+
+<h2 id="write-the-manifest">Write the manifest</h2>
+
+<p>Every plugin needs a <code class="language-plaintext highlighter-rouge">manifest.json</code> at the project root. For the audit tab, keep it minimal:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.example.request-audit"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Request Audit"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"engines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"harborclient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&gt;=1.9.0"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"renderer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dist/renderer.js"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ui"</span><span class="p">],</span><span class="w">
+  </span><span class="nl">"contributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"requestTabs"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"audit"</span><span class="p">,</span><span class="w"> </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Audit"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>A few fields matter here:</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">id</code></strong> — reverse-DNS identifier. HarborClient uses it to namespace storage and track updates.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">engines.harborclient</code></strong> — minimum app version your plugin requires.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">permissions</code></strong> — capabilities shown in the install dialog. This plugin only needs <code class="language-plaintext highlighter-rouge">ui</code>.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">contributes.requestTabs</code></strong> — declares a tab slot before your code runs.</li>
+</ul>
+
+<p>There is an important contract between the manifest and your code: contribution <code class="language-plaintext highlighter-rouge">id</code> values must match what you pass to registration calls. Here, the manifest declares <code class="language-plaintext highlighter-rouge">"id": "audit"</code>, so your renderer must call <code class="language-plaintext highlighter-rouge">registerRequestTab({ id: 'audit', ... })</code>.</p>
+
+<h2 id="write-the-renderer-entry">Write the renderer entry</h2>
+
+<p>Create <code class="language-plaintext highlighter-rouge">src/renderer.tsx</code>. Every renderer plugin starts with two steps: wire up React from the host, then register contributions inside <code class="language-plaintext highlighter-rouge">activate()</code>.</p>
+
+<div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">installReact</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="kd">type</span> <span class="p">{</span> <span class="nx">PluginContext</span><span class="p">,</span> <span class="nx">RequestTabContext</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nf">AuditTab</span><span class="p">({</span> <span class="nx">context</span> <span class="p">}:</span> <span class="p">{</span> <span class="nl">context</span><span class="p">:</span> <span class="nx">RequestTabContext</span> <span class="p">})</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="p">{</span> <span class="nx">draft</span><span class="p">,</span> <span class="nx">response</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">context</span><span class="p">;</span>
+  <span class="kd">const</span> <span class="nx">summary</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">method</span><span class="p">,</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">url</span><span class="p">,</span>
+    <span class="na">headerCount</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nf">filter</span><span class="p">((</span><span class="nx">h</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">h</span><span class="p">.</span><span class="nx">enabled</span> <span class="o">&amp;&amp;</span> <span class="nx">h</span><span class="p">.</span><span class="nx">key</span><span class="p">).</span><span class="nx">length</span><span class="p">,</span>
+    <span class="na">hasBody</span><span class="p">:</span> <span class="nx">draft</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nf">trim</span><span class="p">().</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="na">lastStatus</span><span class="p">:</span> <span class="nx">response</span><span class="p">?.</span><span class="nx">status</span> <span class="o">??</span> <span class="kc">null</span>
+  <span class="p">};</span>
+
+  <span class="k">return </span><span class="p">(</span>
+    <span class="p">&lt;</span><span class="nt">pre</span> <span class="na">className</span><span class="p">=</span><span class="s">"m-0 overflow-auto rounded-md bg-control p-3 text-[14px] text-text"</span><span class="p">&gt;</span>
+      <span class="si">{</span><span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">(</span><span class="nx">summary</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="si">}</span>
+    <span class="p">&lt;/</span><span class="nt">pre</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">hc</span><span class="p">:</span> <span class="nx">PluginContext</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+  <span class="nf">installReact</span><span class="p">(</span><span class="nx">hc</span><span class="p">.</span><span class="nx">react</span><span class="p">);</span>
+  <span class="nx">hc</span><span class="p">.</span><span class="nx">subscriptions</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span>
+    <span class="nx">hc</span><span class="p">.</span><span class="nx">ui</span><span class="p">.</span><span class="nf">registerRequestTab</span><span class="p">({</span>
+      <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">audit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Audit</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">Component</span><span class="p">:</span> <span class="nx">AuditTab</span>
+    <span class="p">})</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Three things to notice:</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">installReact(hc.react)</code></strong> — the host provides React. Do not bundle <code class="language-plaintext highlighter-rouge">react</code> or <code class="language-plaintext highlighter-rouge">react-dom</code> in your plugin.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">RequestTabContext</code></strong> — gives you the active draft and the last response. The tab re-renders locally when the user edits the request — no IPC round-trip per keystroke.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">hc.subscriptions</code></strong> — every <code class="language-plaintext highlighter-rouge">register*</code> call returns a disposable. Push it here so HarborClient cleans up automatically when the plugin deactivates.</li>
+</ol>
+
+<h2 id="configure-the-build">Configure the build</h2>
+
+<p>Bundle with esbuild. A typical renderer build script looks like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>esbuild src/renderer.tsx <span class="se">\</span>
+  <span class="nt">--bundle</span> <span class="nt">--outfile</span><span class="o">=</span>dist/renderer.js <span class="nt">--format</span><span class="o">=</span>esm <span class="se">\</span>
+  <span class="nt">--jsx</span><span class="o">=</span>automatic <span class="nt">--jsx-import-source</span><span class="o">=</span>@harborclient/plugin-api <span class="se">\</span>
+  <span class="nt">--external</span>:react <span class="nt">--external</span>:react-dom
+</code></pre></div></div>
+
+<p>In <code class="language-plaintext highlighter-rouge">package.json</code>, wire that into <code class="language-plaintext highlighter-rouge">dev</code> and <code class="language-plaintext highlighter-rouge">build</code> scripts. Use <code class="language-plaintext highlighter-rouge">--watch</code> on the dev script so rebuilds happen automatically while you edit.</p>
+
+<p>For TypeScript, set <code class="language-plaintext highlighter-rouge">jsx: "react-jsx"</code> and <code class="language-plaintext highlighter-rouge">jsxImportSource: "@harborclient/plugin-api"</code> in <code class="language-plaintext highlighter-rouge">tsconfig.json</code>. Import types from <code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code> and export <code class="language-plaintext highlighter-rouge">activate</code> (and optionally <code class="language-plaintext highlighter-rouge">deactivate</code>) as named exports.</p>
+
+<h2 id="develop-with-unpacked-loading">Develop with unpacked loading</h2>
+
+<p>You do not need to package a <code class="language-plaintext highlighter-rouge">.hcp</code> file on every change. HarborClient can load your project folder directly while you develop.</p>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">pnpm dev</code> to start esbuild in watch mode.</li>
+  <li>In HarborClient, open <strong>Settings → Plugins</strong> and click <strong>Load unpacked…</strong>. Select your plugin project folder.</li>
+  <li>Open a request in the editor and click the <strong>Audit</strong> tab. That triggers plugin activation.</li>
+  <li>Edit your source, save, and wait for esbuild to rebuild. HarborClient watches <code class="language-plaintext highlighter-rouge">manifest.json</code> and entry files, debounces briefly, then deactivates and re-activates your plugin.</li>
+</ol>
+
+<p>For day-to-day work on the same plugin, you can register the path at startup:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">HARBOR_PLUGINS_DEV</span><span class="o">=</span>~/projects/my-plugin harborclient
+</code></pre></div></div>
+
+<p>Or pass <code class="language-plaintext highlighter-rouge">--plugin-dev ~/projects/my-plugin</code> on the command line. The plugin appears in Settings → Plugins the same way as one loaded through the UI.</p>
+
+<h2 id="going-further">Going further</h2>
+
+<p>Once the audit tab works, you can explore other APIs without changing the basic shape of a plugin.</p>
+
+<h3 id="main-entry-for-http-hooks">Main entry for HTTP hooks</h3>
+
+<p>UI code belongs in the renderer entry. If you need to <strong>mutate</strong> outgoing requests — inject headers, sign payloads, add trace IDs — add a separate main entry that runs in the SES utility process:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="kd">type</span> <span class="p">{</span> <span class="nx">MainPluginContext</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/main</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">activate</span><span class="p">(</span><span class="nx">hc</span><span class="p">:</span> <span class="nx">MainPluginContext</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+  <span class="nx">hc</span><span class="p">.</span><span class="nx">subscriptions</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span>
+    <span class="nx">hc</span><span class="p">.</span><span class="nx">http</span><span class="p">.</span><span class="nf">onBeforeSend</span><span class="p">((</span><span class="nx">request</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">request</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="dl">'</span><span class="s1">X-Trace</span><span class="dl">'</span><span class="p">]</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">1</span><span class="dl">'</span><span class="p">;</span>
+    <span class="p">})</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Reference it in <code class="language-plaintext highlighter-rouge">manifest.json</code> with <code class="language-plaintext highlighter-rouge">"main": "dist/main.js"</code> and add the <code class="language-plaintext highlighter-rouge">"http"</code> permission. For read-only logging after a send, renderer-side <code class="language-plaintext highlighter-rouge">hc.http.onAfterSend</code> is often simpler — no main entry required.</p>
+
+<h3 id="permissions">Permissions</h3>
+
+<p>HarborClient shows requested permissions before install. Common grants:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Permission</th>
+      <th>Grants</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ui</code></td>
+      <td>Settings panels, tabs, themes, menus, toasts</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">storage</code></td>
+      <td>Namespaced persistent key-value storage</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filesystem:pick</code></td>
+      <td>Open and save file dialogs</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filesystem:read</code> / <code class="language-plaintext highlighter-rouge">filesystem:write</code></td>
+      <td>Read or write allowlisted paths</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">http</code></td>
+      <td>Before/after send hooks</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ipc</code></td>
+      <td>Custom channels between renderer and main</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Request only what you need. Users see the full list in the install confirmation dialog.</p>
+
+<h3 id="other-ui-contributions">Other UI contributions</h3>
+
+<p>The same registration pattern works for other surfaces. A settings section is often the simplest next step after a request tab:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">hc</span><span class="p">.</span><span class="nx">ui</span><span class="p">.</span><span class="nf">registerSettingsSection</span><span class="p">({</span>
+  <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">myPlugin.settings</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">My Plugin</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">Component</span><span class="p">:</span> <span class="nx">SettingsPanel</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>You can also add sidebar panels, response tabs, footer panels, toolbar actions, context menu items, status bar entries, and custom themes. See the <a href="https://harborclient.github.io/plugin-api/renderer-ui.html">UI contributions reference</a> for the full list.</p>
+
+<h3 id="sdk-helpers">SDK helpers</h3>
+
+<p>The npm package ships utility subpaths for common plugin tasks (requires <code class="language-plaintext highlighter-rouge">@harborclient/plugin-api</code> 0.3.1+):</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">resolveRequest</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/http</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createCappedList</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/storage</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">methodColorClass</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/ui</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">randomId</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@harborclient/plugin-api/runtime-utils</span><span class="dl">'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">resolveRequest</code> mirrors HarborClient’s send-time variable substitution — useful if you build history or audit plugins that need the resolved URL and headers.</p>
+
+<h2 id="package-and-distribute">Package and distribute</h2>
+
+<p>When you are ready to ship, build and zip:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pnpm build
+zip <span class="nt">-r</span> ../request-audit.hcp manifest.json README.md assets dist
+</code></pre></div></div>
+
+<p>Install the <code class="language-plaintext highlighter-rouge">.hcp</code> file through <strong>Settings → Plugins</strong>. To publish to the HarborClient plugin marketplace, open a pull request against the <a href="https://github.com/harborclient/harborclient/blob/main/plugins/catalog.json">plugin catalog</a> with a link to a public repository containing prebuilt files.</p>
+
+<h2 id="checklist">Checklist</h2>
+
+<p>Before you share your plugin, confirm:</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Scaffolded project with <code class="language-plaintext highlighter-rouge">@harborclient/plugin-skeleton</code></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Manifest declares permissions and contributions</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Renderer entry calls <code class="language-plaintext highlighter-rouge">installReact</code> and registers UI on <code class="language-plaintext highlighter-rouge">hc.subscriptions</code></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />esbuild marks React as external</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Tested with Load unpacked and hot reload</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Packaged as <code class="language-plaintext highlighter-rouge">.hcp</code> for distribution</li>
+</ul>
+
+<p>For the full API reference, worked examples, and performance guidelines, keep the <a href="https://harborclient.github.io/plugin-api/">plugin API docs</a> open while you build.</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <a class="post-back-link" href="/">&larr; Back to all posts</a>
+  </footer><a class="u-url" href="/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html" hidden></a>
+</article></div><aside class="sidebar" aria-label="Recent posts">
+  <h2 class="sidebar-heading">Recent posts</h2>
+  <ul class="sidebar-post-list"><li class="">
+      <a href="/rest-api/testing/cli/2026/06/24/the-beauty-and-simplicity-of-httpie.html">The Beauty and Simplicity of HTTPie</a>
+      <time class="sidebar-post-date" datetime="2026-06-24T18:00:00-04:00">Jun 24, 2026</time>
+    </li><li class="is-active">
+      <a href="/rest-api/testing/tools/2026/06/24/writing-a-harborclient-plugin.html">Writing a HarborClient Plugin</a>
+      <time class="sidebar-post-date" datetime="2026-06-24T16:00:00-04:00">Jun 24, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/testing/tools/2026/06/24/harborclient-adds-plugin-support.html">HarborClient Adds Plugin Support</a>
+      <time class="sidebar-post-date" datetime="2026-06-24T14:00:00-04:00">Jun 24, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/testing/tools/2026/06/24/postman-alternatives.html">Postman Alternatives</a>
+      <time class="sidebar-post-date" datetime="2026-06-24T08:00:00-04:00">Jun 24, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/testing/2026/06/23/how-to-test-rest-apis-with-postman.html">How to test REST APIs with Postman</a>
+      <time class="sidebar-post-date" datetime="2026-06-23T17:00:00-04:00">Jun 23, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/typescript/clients/2026/06/10/building-type-safe-rest-api-clients-in-typescript.html">Building Type-Safe REST API Clients in TypeScript</a>
+      <time class="sidebar-post-date" datetime="2026-06-10T11:35:00-04:00">Jun 10, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/testing/contracts/2026/05/04/contract-testing-for-rest-apis.html">Contract Testing for REST APIs</a>
+      <time class="sidebar-post-date" datetime="2026-05-04T04:55:00-04:00">May 4, 2026</time>
+    </li><li class="">
+      <a href="/javascript/typescript/migration/2026/04/19/migrating-from-javascript-to-typescript.html">Migrating from JavaScript to Typescript</a>
+      <time class="sidebar-post-date" datetime="2026-04-19T08:00:00-04:00">Apr 19, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/testing/cli/2026/03/12/testing-rest-apis-from-the-command-line.html">Testing REST APIs from the Command Line</a>
+      <time class="sidebar-post-date" datetime="2026-03-12T15:25:00-04:00">Mar 12, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/http/caching/2026/02/07/http-caching-for-rest-apis.html">HTTP Caching for REST APIs</a>
+      <time class="sidebar-post-date" datetime="2026-02-07T05:40:00-05:00">Feb 7, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/design/2026/01/21/writing-rest-apis-that-developers-will-love.html">Writing REST APIs that Developers Will Love</a>
+      <time class="sidebar-post-date" datetime="2026-01-21T07:00:00-05:00">Jan 21, 2026</time>
+    </li><li class="">
+      <a href="/rest-api/authentication/security/2025/12/16/api-authentication-compared-api-keys-jwt-and-oauth-2-0.html">API Authentication Compared: API Keys, JWT, and OAuth 2.0</a>
+      <time class="sidebar-post-date" datetime="2025-12-16T08:10:00-05:00">Dec 16, 2025</time>
+    </li><li class="">
+      <a href="/rest-api/http/cors/2025/11/22/cors-explained-for-api-developers.html">CORS Explained for API Developers</a>
+      <time class="sidebar-post-date" datetime="2025-11-22T11:05:00-05:00">Nov 22, 2025</time>
+    </li><li class="">
+      <a href="/rest-api/http/status-codes/2025/10/14/http-status-codes-every-api-developer-should-know.html">HTTP Status Codes Every API Developer Should Know</a>
+      <time class="sidebar-post-date" datetime="2025-10-14T07:20:00-04:00">Oct 14, 2025</time>
+    </li></ul>
+</aside></div></div>
+  </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="footer-logo-link" href="/">
+          <span class="site-logo site-logo--footer" aria-hidden="true">
+            <img class="site-logo-mark" src="/assets/images/site-logo-mark.svg" alt="" width="44"
+              height="44">
+          </span>
+          <span class="footer-heading">Application-to-Web Internals</span>
+        </a>
+        <p class="footer-tagline">Discover the world of REST APIs with our comprehensive notes and insights. From basic concepts to advanced techniques, we provide valuable resources for developers and enthusiasts alike.</p>
+      </div>
+
+      <div class="footer-links">
+        <h3 class="footer-label">Connect</h3>
+        <ul class="footer-link-list"><li><a class="u-email" href="mailto:hello@atw-internals.com">hello@atw-internals.com</a></li><li><a href="/feed.xml">RSS Feed</a></li>
+          <li><a href="/about/">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer></body>
+
+</html>
