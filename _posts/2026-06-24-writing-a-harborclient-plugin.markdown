@@ -63,6 +63,7 @@ Every plugin needs a `manifest.json` at the project root. For the audit tab, kee
 {
   "id": "com.example.request-audit",
   "name": "Request Audit",
+  "author": "Acme Inc.",
   "version": "1.0.0",
   "engines": { "harborclient": ">=1.9.0" },
   "renderer": "dist/renderer.js",
